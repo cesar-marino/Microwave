@@ -1,11 +1,75 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{85A31B87-D380-46EA-90B3-CBE9E8F662D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Domain", "src\Domain\Microwave.Domain\Microwave.Domain.csproj", "{27BB751E-B703-4292-9CCA-0735BF2C2AF4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{951B75C5-5B3D-40F2-9A80-BC56EE3B1E93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Application", "src\Application\Microwave.Application\Microwave.Application.csproj", "{11175510-A1B7-4260-8B05-090F03CC7C5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{D6D208F9-48BB-4667-980D-518A6E462803}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Presentation.UI", "src\Presentation\Microwave.Presentation.UI\Microwave.Presentation.UI.csproj", "{805F1789-9AAF-4E85-85C0-610EF11139BB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{FA014E98-741C-412F-A3D4-1ADAB1393E25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Infrastructure.Services.Countdown", "src\Infrastructure\Microwave.Infrastructure.Services.Countdown\Microwave.Infrastructure.Services.Countdown.csproj", "{9803E8B7-4FE3-4529-8E3D-5B510F65D965}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Presentation.API", "src\Presentation\Microwave.Presentation.API\Microwave.Presentation.API.csproj", "{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Infrastructure.Data", "src\Infrastructure\Microwave.Infrastructure.Data\Microwave.Infrastructure.Data.csproj", "{EF8AC797-4104-42A1-ABCD-8BB2B977342D}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27BB751E-B703-4292-9CCA-0735BF2C2AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27BB751E-B703-4292-9CCA-0735BF2C2AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27BB751E-B703-4292-9CCA-0735BF2C2AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27BB751E-B703-4292-9CCA-0735BF2C2AF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11175510-A1B7-4260-8B05-090F03CC7C5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11175510-A1B7-4260-8B05-090F03CC7C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11175510-A1B7-4260-8B05-090F03CC7C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11175510-A1B7-4260-8B05-090F03CC7C5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{805F1789-9AAF-4E85-85C0-610EF11139BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{805F1789-9AAF-4E85-85C0-610EF11139BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{805F1789-9AAF-4E85-85C0-610EF11139BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{805F1789-9AAF-4E85-85C0-610EF11139BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9803E8B7-4FE3-4529-8E3D-5B510F65D965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9803E8B7-4FE3-4529-8E3D-5B510F65D965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9803E8B7-4FE3-4529-8E3D-5B510F65D965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9803E8B7-4FE3-4529-8E3D-5B510F65D965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF8AC797-4104-42A1-ABCD-8BB2B977342D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF8AC797-4104-42A1-ABCD-8BB2B977342D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF8AC797-4104-42A1-ABCD-8BB2B977342D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF8AC797-4104-42A1-ABCD-8BB2B977342D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{85A31B87-D380-46EA-90B3-CBE9E8F662D5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{27BB751E-B703-4292-9CCA-0735BF2C2AF4} = {85A31B87-D380-46EA-90B3-CBE9E8F662D5}
+		{951B75C5-5B3D-40F2-9A80-BC56EE3B1E93} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{11175510-A1B7-4260-8B05-090F03CC7C5E} = {951B75C5-5B3D-40F2-9A80-BC56EE3B1E93}
+		{D6D208F9-48BB-4667-980D-518A6E462803} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{805F1789-9AAF-4E85-85C0-610EF11139BB} = {D6D208F9-48BB-4667-980D-518A6E462803}
+		{FA014E98-741C-412F-A3D4-1ADAB1393E25} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{9803E8B7-4FE3-4529-8E3D-5B510F65D965} = {FA014E98-741C-412F-A3D4-1ADAB1393E25}
+		{21E9203D-6C77-4FC6-9C3D-EEDF7E94C9F0} = {D6D208F9-48BB-4667-980D-518A6E462803}
+		{EF8AC797-4104-42A1-ABCD-8BB2B977342D} = {FA014E98-741C-412F-A3D4-1ADAB1393E25}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B943863D-C39E-46EB-8CBE-E7F74126B732}
