@@ -3,51 +3,95 @@ using Microwave.Domain.SeedWork;
 
 namespace Microwave.Domain.Entities
 {
-    public class HeatingProgramEntity(
-        int seconds = 30,
-        int power = 10,
-        string name = "Default",
-        string food = "Default",
-        char character = '.',
-        string? instructions = null,
-        bool predefined = false,
-        Guid? heatingProgramId = null) : EntityBase(heatingProgramId)
-    {
-        public bool Predefined { get; } = predefined;
-        public int Seconds { get; private set; } = seconds;
-        public int Power { get; private set; } = power;
-        public string Name { get; private set; } = name;
-        public string Food { get; private set; } = food;
-        public char Character { get; private set; } = character;
-        public string? Instructions { get; private set; } = instructions;
-
-        public void IncreaseTime(int seconds)
-        {
-            if (Predefined)
-                throw new EntityValidationException(message: "Cannot add time to a preset program");
-
-            Seconds += seconds;
-        }
-
-        public void DecreaseTime() => Seconds--;
-
-        public void Update(
-            int seconds,
-            int power,
-            string name,
-            string food,
-            char character,
-            string? instructions)
-        {
-            if (Predefined)
-                throw new EntityValidationException(message: "Cannot change a preset program");
-
-            Seconds = seconds;
-            Power = power;
-            Name = name;
-            Food = food;
-            Character = character;
-            Instructions = instructions;
-        }
-    }
+    public class HeatingProgramEntity : EntityBase
+	{
+		public bool Predefined { get; }
+		public int Seconds { get; }
+		public int Power { get; }
+		public char Character { get; }
+		public string Name { get; }
+		public string Food { get; }
+		public string? Instructions { get; }
+		
+		public HeatingProgram(int seconds = 30, int power = 10)
+		{
+			if (seconds > 120 || seconds < 1)
+				throw new EntityValidationException("Tempo inválido");
+				
+			if (power < 1 || power > 10)
+				throw new EntityValidationException("Potência inválida");
+			
+			Seconds = seconds;
+			Power = power;
+			Character = '.';
+			Predefined = false;
+			Name = "Default";
+			Food = "Default";
+		}
+		
+		public HeatingProgram(
+			int seconds, 
+			int power, 
+			char character, 
+			string name, 
+			string food, 
+			string? instructions)
+		{
+			Predefined = false;
+			Seconds = seconds;
+			Power = power;
+			Character = character;
+			Name = name;
+			Food = food;
+			Instructions = instructions;
+		}
+		
+		protected HeatingProgram(
+			Guid heatingProgramId,
+			bool predefined,
+			int seconds, 
+			int power, 
+			char character, 
+			string name, 
+			string food, 
+			string? instructions) : base(heatingProgramId)
+		{
+			Predefined = predefined;
+			Seconds = seconds;
+			Power = power;
+			Character = character;
+			Name = name;
+			Food = food;
+			Instructions = instructions;
+		}
+		
+		public void Update(
+			int seconds,
+			int power,
+			char character,
+			string name,
+			string food,
+			string? instructions)
+		{
+			if(Predefined)
+				throw new EntityValidationException("Não é permitido a alteração de programas pré-definidos");
+				
+			Seconds = seconds;
+			Power = power;
+			Character = character;
+			Name = name;
+			Food = food;
+			Instructions = instructions;
+		}
+		
+		public void AddTime()
+		{
+			if(Predefined)
+				throw new EntityValidationException("Não é permitido acrescentar tempo à programas pré-definidos");
+			
+			Seconds += 30;
+		}
+		
+		public void DecreaseTime() => Seconds -=1;
+	}
 }
