@@ -7,6 +7,7 @@ namespace Microwave.Domain.Entities
     {
         public int Seconds { get; private set; }
         public int Power { get; private set; }
+        public char Character { get; private set; }
 
         public HeatingProgramEntity(int seconds = 30, int power = 10)
         {
@@ -18,8 +19,18 @@ namespace Microwave.Domain.Entities
 
             Seconds = seconds;
             Power = power;
+            Character = '.';
         }
 
         public void AddTime() => Seconds += 30;
+
+        public string Process()
+        {
+            var processResult = string.Empty;
+            for (int i = 0; i < Power; i++)
+                processResult += Character;
+
+            return processResult;
+        }
     }
 }

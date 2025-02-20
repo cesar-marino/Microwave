@@ -66,5 +66,22 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             Assert.Equal(60, heatingProgram.Seconds);
             Assert.Equal(10, heatingProgram.Power);
         }
+
+        [Theory(DisplayName = nameof(ShouldReturnTheHeatingStringAccordingToTheReportedPower))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        [InlineData(1)]
+        [InlineData(5)]
+        [InlineData(10)]
+        public void ShouldReturnTheHeatingStringAccordingToTheReportedPower(int power)
+        {
+            var heatingProgram = new HeatingProgramEntity(power: power);
+            var processResult = heatingProgram.Process();
+
+            var result = string.Empty;
+            for (int i = 0; i < power; i++)
+                result += heatingProgram.Character;
+
+            Assert.Equal(result, processResult);
+        }
     }
 }
