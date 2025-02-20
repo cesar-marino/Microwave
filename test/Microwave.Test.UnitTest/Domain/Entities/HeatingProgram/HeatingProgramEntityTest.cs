@@ -66,5 +66,26 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             Assert.Equal(60, heatingProgram.Seconds);
             Assert.Equal(10, heatingProgram.Power);
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfAddTimeToPredefinedProgram))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        public void ShouldThrowActionNotPermittedExceptionIfAddTimeToPredefinedProgram()
+        {
+            var heatingProgram = new HeatingProgramEntity(
+                heatingProgramId: Guid.NewGuid(),
+                predefined: true,
+                seconds: 30,
+                power: 10,
+                character: '.',
+                name: "default",
+                food: "default",
+                instructions: "teste");
+
+            var act = () => heatingProgram.AddTime();
+
+            var exception = Assert.Throws<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Não é permitido adicionar tempo à programas pré definidos", exception.Message);
+        }
     }
 }
