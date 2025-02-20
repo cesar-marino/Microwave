@@ -23,14 +23,5 @@ namespace Microwave.Domain.Entities
         }
 
         public void AddTime() => Seconds += 30;
-
-        public string Process()
-        {
-            var processResult = string.Empty;
-            for (int i = 0; i < Power; i++)
-                processResult += Character;
-
-            return processResult;
-        }
     }
 }
