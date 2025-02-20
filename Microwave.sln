@@ -7,9 +7,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4894B30D-7F47-4D76-87C7-165FB1A5FA2B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{40B9044D-BCED-449D-AB4E-0A0319F49D90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microwave.Domain", "src\Domain\Microwave.Domain\Microwave.Domain.csproj", "{BE1D5995-127A-4475-80C7-6B42112677B1}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE1D5995-127A-4475-80C7-6B42112677B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE1D5995-127A-4475-80C7-6B42112677B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE1D5995-127A-4475-80C7-6B42112677B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE1D5995-127A-4475-80C7-6B42112677B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{40B9044D-BCED-449D-AB4E-0A0319F49D90} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{BE1D5995-127A-4475-80C7-6B42112677B1} = {40B9044D-BCED-449D-AB4E-0A0319F49D90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A818BFCE-A6F6-4F14-AC27-9E876E49F425}
