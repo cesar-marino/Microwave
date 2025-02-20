@@ -19,5 +19,7 @@ namespace Microwave.Domain.Entities
             Seconds = seconds;
             Power = power;
         }
+
+        public void AddTime() => Seconds += 30;
     }
 }

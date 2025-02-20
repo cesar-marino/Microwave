@@ -55,5 +55,16 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             Assert.Equal(30, heatingProgram.Seconds);
             Assert.Equal(10, heatingProgram.Power);
         }
+
+        [Fact(DisplayName = nameof(ShouldAdd30SecondsIfAddTimeIsCalled))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        public void ShouldAdd30SecondsIfAddTimeIsCalled()
+        {
+            var heatingProgram = new HeatingProgramEntity();
+            heatingProgram.AddTime();
+
+            Assert.Equal(60, heatingProgram.Seconds);
+            Assert.Equal(10, heatingProgram.Power);
+        }
     }
 }
