@@ -32,5 +32,18 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             Assert.Equal("entity-validation", exception.Code);
             Assert.Equal("Potência inválida", exception.Message);
         }
+
+        [Theory(DisplayName = nameof(ShouldCreateAUserDefinedHeatingProgram))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        [InlineData(1, 1)]
+        [InlineData(120, 10)]
+        [InlineData(100, 5)]
+        public void ShouldCreateAUserDefinedHeatingProgram(int seconds, int power)
+        {
+            var heatingProgram = new HeatingProgramEntity(seconds: seconds, power: power);
+
+            Assert.Equal(seconds, heatingProgram.Seconds);
+            Assert.Equal(power, heatingProgram.Power);
+        }
     }
 }
