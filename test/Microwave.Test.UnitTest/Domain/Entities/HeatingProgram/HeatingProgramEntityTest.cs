@@ -1,5 +1,6 @@
 ﻿using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
 {
@@ -86,6 +87,33 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             var exception = Assert.Throws<ActionNotPermittedException>(act);
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Não é permitido adicionar tempo à programas pré definidos", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShoulThrowActionNotPermittedExceptionIfUpdatePredefinedProgram))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        public void ShoulThrowActionNotPermittedExceptionIfUpdatePredefinedProgram()
+        {
+            var heatingProgram = new HeatingProgramEntity(
+                heatingProgramId: Guid.NewGuid(),
+                predefined: true,
+                seconds: 30,
+                power: 10,
+                character: '.',
+                name: "default",
+                food: "default",
+                instructions: "teste");
+
+            var act = () => heatingProgram.Update(
+                seconds: 10,
+                power: 5,
+                character: 'j',
+                name: "new",
+                food: "new",
+                instructions: "new");
+
+            var exception = Assert.Throws<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Não é permitido alterar programas pré definidos", exception.Message);
         }
     }
 }

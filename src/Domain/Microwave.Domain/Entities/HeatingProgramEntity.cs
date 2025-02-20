@@ -55,5 +55,24 @@ namespace Microwave.Domain.Entities
 
             Seconds += 30;
         }
+
+        public void Update(
+            int seconds,
+            int power,
+            char character,
+            string name,
+            string food,
+            string instructions)
+        {
+            if (Predefined)
+                throw new ActionNotPermittedException(message: "Não é permitido alterar programas pré definidos");
+
+            Seconds = seconds;
+            Power = power;
+            Character = character;
+            Name = name;
+            Food = food;
+            Instructions = instructions;
+        }
     }
 }
