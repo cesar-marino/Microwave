@@ -45,5 +45,15 @@ namespace Microwave.Test.UnitTest.Domain.Entities.HeatingProgram
             Assert.Equal(seconds, heatingProgram.Seconds);
             Assert.Equal(power, heatingProgram.Power);
         }
+
+        [Fact(DisplayName = nameof(ShouldCreateAQuickstartProgram))]
+        [Trait("Unit/Entities", "HeatingProgram")]
+        public void ShouldCreateAQuickstartProgram()
+        {
+            var heatingProgram = new HeatingProgramEntity();
+
+            Assert.Equal(30, heatingProgram.Seconds);
+            Assert.Equal(10, heatingProgram.Power);
+        }
     }
 }
