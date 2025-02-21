@@ -62,6 +62,46 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
             Assert.Equal("Não é permitido alterar um programa predefinido", exception.Message);
         }
 
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckCharacterAsyncThrows))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldRethrowSameExceptionThatCheckCharacterAsyncThrows()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
+        }
+
+        //[Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue))]
+        //[Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        //public async Task ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue()
+        //{
+        //    var heatingProgram = _fixture.MakeHeatingProgramEntity();
+        //    _heatingProgramRepositoryMock
+        //        .Setup(x => x.FindAsync(
+        //            It.IsAny<Guid>(),
+        //            It.IsAny<CancellationToken>()))
+        //        .ReturnsAsync(heatingProgram);
+
+        //    _heatingProgramRepositoryMock.Setup(x => x.CheckCharacterAsync(It.IsAny<char>(), It.IsAny<CancellationToken>()))
+        //        .ThrowsAsync(new ActionNotPermittedException());
+        //}
+
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
         [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
         public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
@@ -84,7 +124,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
 
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
-            Assert.Equal("Erro inexperado", exception.Message);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
@@ -107,7 +147,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
 
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
-            Assert.Equal("Erro inexperado", exception.Message);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
 
         [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfHeatingProgramIsSuccessfullyUpdated))]

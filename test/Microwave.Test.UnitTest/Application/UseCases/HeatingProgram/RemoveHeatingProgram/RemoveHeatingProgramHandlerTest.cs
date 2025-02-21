@@ -83,7 +83,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.RemoveHeat
 
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
-            Assert.Equal("Erro inexperado", exception.Message);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
@@ -106,7 +106,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.RemoveHeat
 
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
-            Assert.Equal("Erro inexperado", exception.Message);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
     }
 }
