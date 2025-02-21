@@ -1,7 +1,7 @@
 ﻿using Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram;
 using Microwave.Test.UnitTest.Commons;
 
-namespace Microwave.Test.UnitTest.Application.UseCases.CreateHeatingProgram
+namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.CreateHeatingProgram
 {
     public class CreateHeatingProgramHandlerTestFixture : FixtureBase
     {

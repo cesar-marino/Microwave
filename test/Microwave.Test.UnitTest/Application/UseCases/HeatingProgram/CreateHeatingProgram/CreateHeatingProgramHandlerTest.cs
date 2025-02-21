@@ -5,7 +5,7 @@ using Microwave.Domain.Repositories;
 using Microwave.Domain.SeedWork;
 using Moq;
 
-namespace Microwave.Test.UnitTest.Application.UseCases.CreateHeatingProgram
+namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.CreateHeatingProgram
 {
     public class CreateHeatingProgramHandlerTest : IClassFixture<CreateHeatingProgramHandlerTestFixture>
     {
