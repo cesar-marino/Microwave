@@ -1,4 +1,5 @@
 ﻿using Microwave.Application.UseCases.HeatingProgram.Commons;
+using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
 
 namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
@@ -7,7 +8,10 @@ namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
     {
         public async Task<HeatingProgramResponse> Handle(UpdateHeatingProgramRequest request, CancellationToken cancellationToken)
         {
-            await heatingProgramRepository.FindAsync(request.HeatingProgramId, cancellationToken);
+            var heatingProgram = await heatingProgramRepository.FindAsync(request.HeatingProgramId, cancellationToken);
+            if (heatingProgram.Predefined)
+                throw new ActionNotPermittedException("Não é permitido alterar um programa predefinido");
+
             throw new NotImplementedException();
         }
     }

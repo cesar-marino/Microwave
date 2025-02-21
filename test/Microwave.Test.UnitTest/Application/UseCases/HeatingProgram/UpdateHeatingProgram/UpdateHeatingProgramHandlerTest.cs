@@ -36,5 +36,24 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
             Assert.Equal("not-found", exception.Code);
             Assert.Equal("Programa de aquecimento não encontrado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfProgramIsPredefined))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldThrowActionNotPermittedExceptionIfProgramIsPredefined()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity(predefined: true);
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Não é permitido alterar um programa predefinido", exception.Message);
+        }
     }
 }

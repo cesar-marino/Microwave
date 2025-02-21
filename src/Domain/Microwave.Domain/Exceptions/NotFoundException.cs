@@ -1,9 +1,8 @@
 ﻿namespace Microwave.Domain.Exceptions
 {
     public class NotFoundException(
-        string code = "not-found",
         string? message = "",
-        Exception? innerException = null) : DomainException(code, message, innerException)
+        Exception? innerException = null) : DomainException("not-found", message, innerException)
     {
     }
 }
