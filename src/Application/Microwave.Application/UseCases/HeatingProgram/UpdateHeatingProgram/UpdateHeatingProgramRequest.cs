@@ -4,6 +4,7 @@ using Microwave.Application.UseCases.HeatingProgram.Commons;
 namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
 {
     public class UpdateHeatingProgramRequest(
+        Guid heatingProgramId,
         int seconds,
         int power,
         char character,
@@ -11,6 +12,7 @@ namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
         string food,
         string? instructions) : IRequest<HeatingProgramResponse>
     {
+        public Guid HeatingProgramId { get; } = heatingProgramId;
         public int Seconds { get; } = seconds;
         public int Power { get; } = power;
         public char Character { get; } = character;
