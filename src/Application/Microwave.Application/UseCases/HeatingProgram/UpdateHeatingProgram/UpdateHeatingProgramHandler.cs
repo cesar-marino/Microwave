@@ -1,10 +1,13 @@
 ﻿using Microwave.Application.UseCases.HeatingProgram.Commons;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 
 namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
 {
-    public class UpdateHeatingProgramHandler(IHeatingProgramRepository heatingProgramRepository) : IUpdateHeatingProgramHandler
+    public class UpdateHeatingProgramHandler(
+        IHeatingProgramRepository heatingProgramRepository,
+        IUnitOfWork unitOfWork) : IUpdateHeatingProgramHandler
     {
         public async Task<HeatingProgramResponse> Handle(UpdateHeatingProgramRequest request, CancellationToken cancellationToken)
         {
@@ -12,9 +15,17 @@ namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
             if (heatingProgram.Predefined)
                 throw new ActionNotPermittedException("Não é permitido alterar um programa predefinido");
 
-            await heatingProgramRepository.UpdateAsync(heatingProgram, cancellationToken);
+            heatingProgram.Update(
+                seconds: request.Seconds,
+                power: request.Power,
+                character: request.Character,
+                name: request.Name,
+                food: request.Food,
+                instructions: request.Instructions);
 
-            throw new NotImplementedException();
+            await heatingProgramRepository.UpdateAsync(heatingProgram, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
+            return HeatingProgramResponse.FromEntity(heatingProgram);
         }
     }
 }

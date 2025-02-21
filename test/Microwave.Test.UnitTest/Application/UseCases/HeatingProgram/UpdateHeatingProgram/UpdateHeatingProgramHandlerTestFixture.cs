@@ -5,8 +5,8 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
 {
     public class UpdateHeatingProgramHandlerTestFixture : FixtureBase
     {
-        public UpdateHeatingProgramRequest MakeUpdateHeatingProgramRequest() => new(
-            heatingProgramId: Faker.Random.Guid(),
+        public UpdateHeatingProgramRequest MakeUpdateHeatingProgramRequest(Guid? heatingProgramId = null) => new(
+            heatingProgramId: heatingProgramId ?? Faker.Random.Guid(),
             seconds: Faker.Random.Int(1, 120),
             power: Faker.Random.Int(1, 10),
             character: Faker.Random.Char(),

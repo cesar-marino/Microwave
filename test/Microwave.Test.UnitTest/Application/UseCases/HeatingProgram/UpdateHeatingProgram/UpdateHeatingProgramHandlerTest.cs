@@ -2,6 +2,7 @@
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 using Moq;
 
 namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeatingProgram
@@ -11,13 +12,17 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
         private readonly UpdateHeatingProgramHandlerTestFixture _fixture;
         private readonly UpdateHeatingProgramHandler _sut;
         private readonly Mock<IHeatingProgramRepository> _heatingProgramRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public UpdateHeatingProgramHandlerTest(UpdateHeatingProgramHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _heatingProgramRepositoryMock = new();
+            _unitOfWorkMock = new();
 
-            _sut = new(heatingProgramRepository: _heatingProgramRepositoryMock.Object);
+            _sut = new(
+                heatingProgramRepository: _heatingProgramRepositoryMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindAsyncThrows))]
@@ -80,6 +85,52 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inexperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inexperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfHeatingProgramIsSuccessfullyUpdated))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldReturnTheCorrectResponseIfHeatingProgramIsSuccessfullyUpdated()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest(heatingProgramId: heatingProgram.Id);
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.Equal(request.Character, response.Character);
+            Assert.Equal(request.Food, response.Food);
+            Assert.Equal(request.HeatingProgramId, response.HeatingProgramId);
+            Assert.Equal(request.Instructions, response.Instructions);
+            Assert.Equal(request.Name, response.Name);
+            Assert.Equal(request.Power, response.Power);
+            Assert.Equal(request.Seconds, response.Seconds);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Microwave.Domain.Entities
             char character,
             string name,
             string food,
-            string instructions)
+            string? instructions)
         {
             if (Predefined)
                 throw new ActionNotPermittedException(message: "Não é permitido alterar programas pré definidos");
