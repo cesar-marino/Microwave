@@ -15,7 +15,9 @@ namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
             if (heatingProgram.Predefined)
                 throw new ActionNotPermittedException("Não é permitido alterar um programa predefinido");
 
-            await heatingProgramRepository.CheckCharacterAsync(request.Character, cancellationToken);
+            var characterIsUse = await heatingProgramRepository.CheckCharacterAsync(request.Character, cancellationToken);
+            if (characterIsUse || request.Character == '.')
+                throw new ActionNotPermittedException("Caractere de aquecimento em uso");
 
             heatingProgram.Update(
                 seconds: request.Seconds,

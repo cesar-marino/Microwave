@@ -87,20 +87,61 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
             Assert.Equal("Erro inesperado", exception.Message);
         }
 
-        //[Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue))]
-        //[Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
-        //public async Task ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue()
-        //{
-        //    var heatingProgram = _fixture.MakeHeatingProgramEntity();
-        //    _heatingProgramRepositoryMock
-        //        .Setup(x => x.FindAsync(
-        //            It.IsAny<Guid>(),
-        //            It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(heatingProgram);
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldThrowActionNotPermittedExceptionIfCheckCharacterAsyncReturnsTrue()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
 
-        //    _heatingProgramRepositoryMock.Setup(x => x.CheckCharacterAsync(It.IsAny<char>(), It.IsAny<CancellationToken>()))
-        //        .ThrowsAsync(new ActionNotPermittedException());
-        //}
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Caractere de aquecimento em uso", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfCharacterIsDefault))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldThrowActionNotPermittedExceptionIfCharacterIsDefault()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest(character: '.');
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Caractere de aquecimento em uso", exception.Message);
+        }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
         [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
@@ -112,6 +153,12 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
 
             _heatingProgramRepositoryMock
                 .Setup(x => x.UpdateAsync(
@@ -138,6 +185,12 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(heatingProgram);
 
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
             _unitOfWorkMock
                 .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
@@ -160,6 +213,12 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
                     It.IsAny<Guid>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
 
             var request = _fixture.MakeUpdateHeatingProgramRequest(heatingProgramId: heatingProgram.Id);
             var response = await _sut.Handle(request, _fixture.CancellationToken);
