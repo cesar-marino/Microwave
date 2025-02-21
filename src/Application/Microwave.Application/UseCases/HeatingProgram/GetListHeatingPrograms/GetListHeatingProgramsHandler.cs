@@ -7,9 +7,8 @@ namespace Microwave.Application.UseCases.HeatingProgram.GetListHeatingPrograms
     {
         public async Task<List<HeatingProgramResponse>> Handle(GetListHeatingProgramsRequest request, CancellationToken cancellationToken)
         {
-            await heatingProgramRepository.GetAllAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            var heatingPrograms = await heatingProgramRepository.GetAllAsync(cancellationToken);
+            return [.. heatingPrograms.Select(HeatingProgramResponse.FromEntity)];
         }
     }
 }

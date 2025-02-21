@@ -34,5 +34,32 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.GetListHea
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheSameListThatGetAllAsyncReturns))]
+        [Trait("Unit/UseCase", "HeatingProgram - GetListHeatingPrograms")]
+        public async Task ShouldReturnTheSameListThatGetAllAsyncReturns()
+        {
+            var heatingPrograms = _fixture.MakeListHeatingPrograms();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.GetAllAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingPrograms);
+
+            var request = _fixture.MakeGetListHeatingProgramsRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            heatingPrograms.ForEach((heatingProgram) =>
+            {
+                var result = heatingPrograms.FirstOrDefault(x => x.Id == heatingProgram.Id);
+                Assert.NotNull(result);
+                Assert.Equal(heatingProgram.Character, result.Character);
+                Assert.Equal(heatingProgram.Food, result.Food);
+                Assert.Equal(heatingProgram.Id, result.Id);
+                Assert.Equal(heatingProgram.Instructions, result.Instructions);
+                Assert.Equal(heatingProgram.Name, result.Name);
+                Assert.Equal(heatingProgram.Power, result.Power);
+                Assert.Equal(heatingProgram.Predefined, result.Predefined);
+                Assert.Equal(heatingProgram.Seconds, result.Seconds);
+            });
+        }
     }
 }
