@@ -106,5 +106,26 @@ namespace Microwave.Test.UnitTest.Application.UseCases.CreateHeatingProgram
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inexperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfHeatingProgramIsSuccessfullyAdded))]
+        [Trait("Unit/UseCases", "HeatingProgram - CreateHeatingProgram")]
+        public async Task ShouldReturnTheCorrectResponseIfHeatingProgramIsSuccessfullyAdded()
+        {
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeCreateHeatingProgramRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.Equal(request.Character, response.Character);
+            Assert.Equal(request.Food, response.Food);
+            Assert.Equal(request.Instructions, response.Instructions);
+            Assert.Equal(request.Name, response.Name);
+            Assert.Equal(request.Power, response.Power);
+            Assert.Equal(request.Seconds, response.Seconds);
+        }
     }
 }

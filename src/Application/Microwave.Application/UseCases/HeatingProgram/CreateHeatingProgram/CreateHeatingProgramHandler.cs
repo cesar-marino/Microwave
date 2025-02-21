@@ -26,7 +26,7 @@ namespace Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram
 
             await heatingProgramRepository.InsertAsync(heatingProgram, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-            throw new NotImplementedException();
+            return HeatingProgramResponse.FromEntity(heatingProgram);
         }
     }
 }

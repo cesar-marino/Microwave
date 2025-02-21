@@ -1,4 +1,6 @@
-﻿namespace Microwave.Application.UseCases.HeatingProgram.Commons
+﻿using Microwave.Domain.Entities;
+
+namespace Microwave.Application.UseCases.HeatingProgram.Commons
 {
     public class HeatingProgramResponse(
         Guid heatingProgramId,
@@ -18,5 +20,15 @@
         public string Name { get; } = name;
         public string Food { get; } = food;
         public string? Instructions { get; } = instructions;
+
+        public static HeatingProgramResponse FromEntity(HeatingProgramEntity heatingProgram) => new(
+            heatingProgramId: heatingProgram.Id,
+            predefined: heatingProgram.Predefined,
+            seconds: heatingProgram.Seconds,
+            power: heatingProgram.Power,
+            character: heatingProgram.Character,
+            name: heatingProgram.Name,
+            food: heatingProgram.Food,
+            instructions: heatingProgram.Instructions);
     }
 }
