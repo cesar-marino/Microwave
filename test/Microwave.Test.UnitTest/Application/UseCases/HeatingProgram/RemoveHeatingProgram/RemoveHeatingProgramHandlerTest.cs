@@ -55,5 +55,30 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.RemoveHeat
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Não é permitido excluir um programa predefinido", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfHeatingProgramIsPredefined))]
+        [Trait("Unit/UseCase", "HeatingProgram - RemoveHeatingProgram")]
+        public async Task ShouldRethrowSameExceptionThatRemoveAsyncThrows()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.RemoveAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeRemoveHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inexperado", exception.Message);
+        }
     }
 }

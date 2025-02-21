@@ -11,6 +11,8 @@ namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
             if (heatingProgram.Predefined)
                 throw new ActionNotPermittedException(message: "Não é permitido excluir um programa predefinido");
 
+            await heatingProgramRepository.RemoveAsync(heatingProgram.Id, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
