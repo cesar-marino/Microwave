@@ -1,4 +1,5 @@
 ﻿using Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram;
+using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
 using Moq;
@@ -54,6 +55,31 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.UpdateHeat
             var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Não é permitido alterar um programa predefinido", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatUpdateAsyncThrows))]
+        [Trait("Unit/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldRethrowSameExceptionThatUpdateAsyncThrows()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            _heatingProgramRepositoryMock
+                .Setup(x => x.FindAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(heatingProgram);
+
+            _heatingProgramRepositoryMock
+                .Setup(x => x.UpdateAsync(
+                    It.IsAny<HeatingProgramEntity>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inexperado", exception.Message);
         }
     }
 }

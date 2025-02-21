@@ -12,6 +12,8 @@ namespace Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram
             if (heatingProgram.Predefined)
                 throw new ActionNotPermittedException("Não é permitido alterar um programa predefinido");
 
+            await heatingProgramRepository.UpdateAsync(heatingProgram, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
