@@ -1,11 +1,14 @@
 ﻿using Microwave.Application.UseCases.HeatingProgram.Commons;
+using Microwave.Domain.Repositories;
 
 namespace Microwave.Application.UseCases.HeatingProgram.GetListHeatingPrograms
 {
-    public class GetListHeatingProgramsHandler : IGetListHeatingProgramsHandler
+    public class GetListHeatingProgramsHandler(IHeatingProgramRepository heatingProgramRepository) : IGetListHeatingProgramsHandler
     {
-        public Task<List<HeatingProgramResponse>> Handle(GetListHeatingProgramsRequest request, CancellationToken cancellationToken)
+        public async Task<List<HeatingProgramResponse>> Handle(GetListHeatingProgramsRequest request, CancellationToken cancellationToken)
         {
+            await heatingProgramRepository.GetAllAsync(cancellationToken);
+
             throw new NotImplementedException();
         }
     }
