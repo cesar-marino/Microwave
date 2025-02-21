@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Application\Microwave.Application\Microwave.Application.csproj" />
     <ProjectReference Include="..\..\src\Domain\Microwave.Domain\Microwave.Domain.csproj" />
   </ItemGroup>
 
