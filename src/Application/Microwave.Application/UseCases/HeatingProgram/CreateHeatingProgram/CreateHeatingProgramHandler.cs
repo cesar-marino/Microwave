@@ -2,10 +2,13 @@
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 
 namespace Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram
 {
-    public class CreateHeatingProgramHandler(IHeatingProgramRepository heatingProgramRepository) : ICreateHeatingProgramHandler
+    public class CreateHeatingProgramHandler(
+        IHeatingProgramRepository heatingProgramRepository,
+        IUnitOfWork unitOfWork) : ICreateHeatingProgramHandler
     {
         public async Task<HeatingProgramResponse> Handle(CreateHeatingProgramRequest request, CancellationToken cancellationToken)
         {
@@ -22,6 +25,7 @@ namespace Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram
                 instructions: request.Instructions);
 
             await heatingProgramRepository.InsertAsync(heatingProgram, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
             throw new NotImplementedException();
         }
     }
