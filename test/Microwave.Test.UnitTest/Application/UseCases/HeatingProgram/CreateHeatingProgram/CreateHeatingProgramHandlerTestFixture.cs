@@ -5,10 +5,10 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.CreateHeat
 {
     public class CreateHeatingProgramHandlerTestFixture : FixtureBase
     {
-        public CreateHeatingProgramRequest MakeCreateHeatingProgramRequest() => new(
+        public CreateHeatingProgramRequest MakeCreateHeatingProgramRequest(char? character = null) => new(
             seconds: Faker.Random.Int(1, 120),
             power: Faker.Random.Int(1, 10),
-            character: Faker.Random.Char(),
+            character: character ?? Faker.Random.Char(),
             name: Faker.Random.String(),
             food: Faker.Random.String(),
             instructions: Faker.Random.String());

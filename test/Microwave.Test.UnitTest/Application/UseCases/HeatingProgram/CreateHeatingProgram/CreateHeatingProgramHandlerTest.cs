@@ -60,6 +60,24 @@ namespace Microwave.Test.UnitTest.Application.UseCases.HeatingProgram.CreateHeat
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Caractere de aquecimento em uso", exception.Message);
         }
+        
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfCharacterIsDefault))]
+        [Trait("Unit/UseCases", "HeatingProgram - CreateHeatingProgram")]
+        public async Task ShouldThrowActionNotPermittedExceptionIfCharacterIsDefault()
+        {
+            _heatingProgramRepositoryMock
+                .Setup(x => x.CheckCharacterAsync(
+                    It.IsAny<char>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeCreateHeatingProgramRequest(character: '.');
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Caractere de aquecimento em uso", exception.Message);
+        }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
         [Trait("Unit/UseCases", "HeatingProgram - CreateHeatingProgram")]

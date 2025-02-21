@@ -13,7 +13,7 @@ namespace Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram
         public async Task<HeatingProgramResponse> Handle(CreateHeatingProgramRequest request, CancellationToken cancellationToken)
         {
             var characterInUse = await heatingProgramRepository.CheckCharacterAsync(request.Character, cancellationToken);
-            if (characterInUse)
+            if (characterInUse || request.Character == '.')
                 throw new ActionNotPermittedException(message: "Caractere de aquecimento em uso");
 
             var heatingProgram = new HeatingProgramEntity(
