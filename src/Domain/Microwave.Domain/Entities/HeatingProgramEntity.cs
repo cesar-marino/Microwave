@@ -48,6 +48,23 @@ namespace Microwave.Domain.Entities
             Instructions = instructions;
         }
 
+        public HeatingProgramEntity(
+            int seconds,
+            int power,
+            char character,
+            string name,
+            string food,
+            string? instructions)
+        {
+            Predefined = false;
+            Seconds = seconds;
+            Power = power;
+            Character = character;
+            Name = name;
+            Food = food;
+            Instructions = instructions;
+        }
+
         public void AddTime()
         {
             if (Predefined)
