@@ -1,9 +1,12 @@
-﻿namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
+﻿using Microwave.Domain.Repositories;
+
+namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
 {
-    public class RemoveHeatingProgramHandler : IRemoveHeatingProgramHandler
+    public class RemoveHeatingProgramHandler(IHeatingProgramRepository heatingProgramRepository) : IRemoveHeatingProgramHandler
     {
-        public Task Handle(RemoveHeatingProgramRequest request, CancellationToken cancellationToken)
+        public async Task Handle(RemoveHeatingProgramRequest request, CancellationToken cancellationToken)
         {
+            await heatingProgramRepository.FindAsync(request.HeatingProgramId, cancellationToken);
             throw new NotImplementedException();
         }
     }
