@@ -16,8 +16,7 @@ namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
 
             await heatingProgramRepository.RemoveAsync(heatingProgram.Id, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            await Task.CompletedTask;
         }
     }
 }
