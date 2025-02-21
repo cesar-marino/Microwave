@@ -1,4 +1,5 @@
-﻿using Microwave.Domain.Repositories;
+﻿using Microwave.Domain.Exceptions;
+using Microwave.Domain.Repositories;
 
 namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
 {
@@ -6,7 +7,10 @@ namespace Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram
     {
         public async Task Handle(RemoveHeatingProgramRequest request, CancellationToken cancellationToken)
         {
-            await heatingProgramRepository.FindAsync(request.HeatingProgramId, cancellationToken);
+            var heatingProgram = await heatingProgramRepository.FindAsync(request.HeatingProgramId, cancellationToken);
+            if (heatingProgram.Predefined)
+                throw new ActionNotPermittedException(message: "Não é permitido excluir um programa predefinido");
+
             throw new NotImplementedException();
         }
     }
