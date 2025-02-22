@@ -1,4 +1,5 @@
-﻿using Microwave.Application.UseCases.User.Authentication;
+﻿using Microwave.Application.Services;
+using Microwave.Application.UseCases.User.Authentication;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
 using Moq;
@@ -10,14 +11,17 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
         private readonly AuthenticationHandlerTestFixture _fixture;
         private readonly AuthenticationHandler _sut;
         private readonly Mock<IUserRepository> _userRepositoryMock;
+        private readonly Mock<IEncryptionService> _encryptionServiceMock;
 
         public AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _userRepositoryMock = new();
+            _encryptionServiceMock = new();
 
             _sut = new(
-                userRepository: _userRepositoryMock.Object);
+                userRepository: _userRepositoryMock.Object,
+                encryptionService: _encryptionServiceMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
@@ -36,6 +40,32 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
             var exception = await Assert.ThrowsAsync<NotFoundException>(act);
             Assert.Equal("not-found", exception.Code);
             Assert.Equal("Usuário não encontrado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCompareAsyncThrows))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldRethrowSameExceptionThatCompareAsyncThrows()
+        {
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            _encryptionServiceMock
+                .Setup(x => x.CompareAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
     }
 }

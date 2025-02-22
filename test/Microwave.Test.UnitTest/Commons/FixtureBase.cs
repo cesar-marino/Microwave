@@ -17,5 +17,11 @@ namespace Microwave.Test.UnitTest.Commons
             name: Faker.Random.String(),
             food: Faker.Random.String(),
             instructions: Faker.Random.String());
+
+        public UserEntity MakeUserEntity() => new(
+            userId: Faker.Random.Guid(),
+            username: Faker.Internet.UserName(),
+            password: Faker.Internet.Password(),
+            token: Faker.Random.Guid().ToString());
     }
 }
