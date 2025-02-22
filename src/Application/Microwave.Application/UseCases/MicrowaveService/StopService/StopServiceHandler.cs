@@ -1,11 +1,13 @@
-﻿using Microwave.Application.UseCases.MicrowaveService.Commons;
+﻿using Microwave.Application.Services;
+using Microwave.Application.UseCases.MicrowaveService.Commons;
 
 namespace Microwave.Application.UseCases.MicrowaveService.StopService
 {
-    public class StopServiceHandler : IStopServiceHandler
+    public class StopServiceHandler(ICountdownBackgroundService countdownService) : IStopServiceHandler
     {
-        public Task<MicrowaveServiceResponse> Handle(StopServiceRequest request, CancellationToken cancellationToken)
+        public async Task<MicrowaveServiceResponse> Handle(StopServiceRequest request, CancellationToken cancellationToken)
         {
+            await countdownService.StopAsync(request.MicrowaveServiceId, cancellationToken);
             throw new NotImplementedException();
         }
     }
