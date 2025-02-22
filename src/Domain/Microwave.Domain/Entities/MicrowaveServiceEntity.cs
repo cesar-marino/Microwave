@@ -17,10 +17,15 @@ namespace Microwave.Domain.Entities
 
         public string Process()
         {
+            CheckProgramIsRunning();
+
             var processResult = string.Empty;
 
             if (HeatingProgram.Seconds <= 0)
                 return "Aquecimento concluído";
+
+            if (Status == MicrowaveServiceStatus.Paused)
+                Status = MicrowaveServiceStatus.InProgress;
 
             for (int i = 0; i < HeatingProgram.Power; i++)
                 processResult += HeatingProgram.Character;
@@ -31,13 +36,18 @@ namespace Microwave.Domain.Entities
 
         public void Stop()
         {
-            if (Status == MicrowaveServiceStatus.Canceled
-                || Status == MicrowaveServiceStatus.Completed)
-                throw new ActionNotPermittedException("O programa não esta em andamento");
+            CheckProgramIsRunning();
 
             Status = Status != MicrowaveServiceStatus.Paused
                 ? MicrowaveServiceStatus.Paused
                 : MicrowaveServiceStatus.Canceled;
+        }
+
+        private void CheckProgramIsRunning()
+        {
+            if (Status == MicrowaveServiceStatus.Canceled
+                || Status == MicrowaveServiceStatus.Completed)
+                throw new ActionNotPermittedException("O programa não esta em andamento");
         }
     }
 }
