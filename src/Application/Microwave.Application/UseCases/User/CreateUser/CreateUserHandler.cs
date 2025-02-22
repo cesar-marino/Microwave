@@ -25,11 +25,15 @@ namespace Microwave.Application.UseCases.User.CreateUser
                 username: request.Username,
                 password: passwordEncrypted);
 
-            _ = await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
+            var token = await tokenService.GenerateTokenAsync(
+                id: user.Id,
+                username: user.Username,
+                cancellationToken);
 
+            user.ChangeToken(token);
             await userRepository.InsertAsync(user, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-            throw new NotImplementedException();
+            return UserResponse.FromEntity(user);
         }
     }
 }

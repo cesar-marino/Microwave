@@ -1,4 +1,5 @@
-﻿using Microwave.Application.Services;
+﻿using Castle.Components.DictionaryAdapter.Xml;
+using Microwave.Application.Services;
 using Microwave.Application.UseCases.User.CreateUser;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
@@ -193,6 +194,38 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
             var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAdded))]
+        [Trait("Unit/UseCase", "User - CreateUser")]
+        public async Task ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAdded()
+        {
+            _userRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var password = _fixture.Faker.Internet.Password();
+            _encryptionServiceMock
+                .Setup(x => x.EncyptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(password);
+
+            var token = _fixture.Faker.Random.Guid().ToString();
+            _tokenServiceMock
+                .Setup(x => x.GenerateTokenAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(token);
+
+            var request = _fixture.MakeCreateUserRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.Equal(token, response.Token);
+            Assert.Equal(request.Username, response.Username);
         }
     }
 }
