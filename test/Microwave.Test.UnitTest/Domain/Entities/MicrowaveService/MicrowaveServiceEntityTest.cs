@@ -18,5 +18,19 @@ namespace Microwave.Test.UnitTest.Domain.Entities.MicrowaveService
 
             Assert.Equal(result, response);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnCompletedHeatingAtTheEndOfProcessing))]
+        [Trait("Unit/Entities", "MicrowaveProgram - Process")]
+        public void ShouldReturnCompletedHeatingAtTheEndOfProcessing()
+        {
+            var heatingProgram = new HeatingProgramEntity(seconds: 1);
+            var microwaveService = new MicrowaveServiceEntity(heatingProgram);
+
+            _ = microwaveService.Process();
+            var response = microwaveService.Process();
+
+            Assert.Equal("Aquecimento concluído", response);
+            Assert.Equal(0, microwaveService.HeatingProgram.Seconds);
+        }
     }
 }

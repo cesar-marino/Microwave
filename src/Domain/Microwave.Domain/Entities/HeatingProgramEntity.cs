@@ -73,6 +73,8 @@ namespace Microwave.Domain.Entities
             Seconds += 30;
         }
 
+        public void DecreaseTime() => Seconds -= 1;
+
         public void Update(
             int seconds,
             int power,

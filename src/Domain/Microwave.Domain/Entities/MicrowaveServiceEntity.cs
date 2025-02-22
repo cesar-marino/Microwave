@@ -18,9 +18,13 @@ namespace Microwave.Domain.Entities
         {
             var processResult = string.Empty;
 
+            if (HeatingProgram.Seconds <= 0)
+                return "Aquecimento concluído";
+
             for (int i = 0; i < HeatingProgram.Power; i++)
                 processResult += HeatingProgram.Character;
 
+            HeatingProgram.DecreaseTime();
             return processResult;
         }
     }
