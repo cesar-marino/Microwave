@@ -67,5 +67,31 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowInvalidPasswordExceptionIfComapreAsyuncReturnsFalse))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldThrowInvalidPasswordExceptionIfComapreAsyuncReturnsFalse()
+        {
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            _encryptionServiceMock
+                .Setup(x => x.CompareAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<InvalidPasswordException>(act);
+            Assert.Equal("invalid-password", exception.Code);
+            Assert.Equal("Senha incorreta", exception.Message);
+        }
     }
 }
