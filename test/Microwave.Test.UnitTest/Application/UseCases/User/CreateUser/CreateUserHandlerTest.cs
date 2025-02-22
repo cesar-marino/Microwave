@@ -7,7 +7,7 @@ using Microwave.Domain.Repositories;
 using Microwave.Domain.SeedWork;
 using Moq;
 
-namespace Microwave.Test.UnitTest.Application.UseCases.User
+namespace Microwave.Test.UnitTest.Application.UseCases.User.CreateUser
 {
     public class CreateUserHandlerTest : IClassFixture<CreateUserHandlerTestFixture>
     {
