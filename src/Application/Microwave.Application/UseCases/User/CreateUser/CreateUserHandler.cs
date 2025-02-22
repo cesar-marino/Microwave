@@ -3,13 +3,15 @@ using Microwave.Application.UseCases.User.Commons;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 
 namespace Microwave.Application.UseCases.User.CreateUser
 {
     public class CreateUserHandler(
         IUserRepository userRepository,
         IEncryptionService encryptionService,
-        ITokenService tokenService) : ICreateUserHandler
+        ITokenService tokenService,
+        IUnitOfWork unitOfWork) : ICreateUserHandler
     {
         public async Task<UserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {
@@ -26,6 +28,7 @@ namespace Microwave.Application.UseCases.User.CreateUser
             _ = await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
             await userRepository.InsertAsync(user, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
             throw new NotImplementedException();
         }
     }

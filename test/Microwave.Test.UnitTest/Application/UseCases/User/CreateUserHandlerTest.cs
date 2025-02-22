@@ -3,6 +3,7 @@ using Microwave.Application.UseCases.User.CreateUser;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 using Moq;
 
 namespace Microwave.Test.UnitTest.Application.UseCases.User
@@ -14,6 +15,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public CreateUserHandlerTest(CreateUserHandlerTestFixture fixture)
         {
@@ -21,11 +23,13 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
             _userRepositoryMock = new();
             _encryptionServiceMock = new();
             _tokenServiceMock = new();
+            _unitOfWorkMock = new();
 
             _sut = new(
                 userRepository: _userRepositoryMock.Object,
                 encryptionService: _encryptionServiceMock.Object,
-                tokenService: _tokenServiceMock.Object);
+                tokenService: _tokenServiceMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCheckUsernameAsyncThrows))]
@@ -119,9 +123,9 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
             Assert.Equal("Erro inesperado", exception.Message);
         }
 
-        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInserAsyncThrows))]
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInsertAsyncThrows))]
         [Trait("Unit/UseCase", "User - CreateUser")]
-        public async Task ShouldRethrowSameExceptionThatInserAsyncThrows()
+        public async Task ShouldRethrowSameExceptionThatInsertAsyncThrows()
         {
             _userRepositoryMock
                 .Setup(x => x.CheckUsernameAsync(
@@ -146,6 +150,41 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
                 .Setup(x => x.InsertAsync(
                     It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateUserRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "User - CreateUser")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            _userRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _encryptionServiceMock
+                .Setup(x => x.EncyptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync("");
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateTokenAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync("");
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeCreateUserRequest();
