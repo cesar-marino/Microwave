@@ -3,6 +3,7 @@ using Microwave.Application.UseCases.User.Authentication;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 using Moq;
 
 namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
@@ -14,6 +15,7 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
         private readonly Mock<ITokenService> _tokenServiceMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
         public AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture)
         {
@@ -21,11 +23,13 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
             _userRepositoryMock = new();
             _encryptionServiceMock = new();
             _tokenServiceMock = new();
+            _unitOfWorkMock = new();
 
             _sut = new(
                 userRepository: _userRepositoryMock.Object,
                 encryptionService: _encryptionServiceMock.Object,
-                tokenService: _tokenServiceMock.Object);
+                tokenService: _tokenServiceMock.Object,
+                unitOfWork: _unitOfWorkMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
@@ -153,6 +157,36 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
                 .Setup(x => x.UpdateAsync(
                     It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatCommitAsyncThrows))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldRethrowSameExceptionThatCommitAsyncThrows()
+        {
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            _encryptionServiceMock
+                .Setup(x => x.CompareAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _unitOfWorkMock
+                .Setup(x => x.CommitAsync(It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 
             var request = _fixture.MakeAuthenticationRequest();

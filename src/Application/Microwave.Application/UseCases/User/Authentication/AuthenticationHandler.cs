@@ -2,13 +2,15 @@
 using Microwave.Application.UseCases.User.Commons;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
 
 namespace Microwave.Application.UseCases.User.Authentication
 {
     public class AuthenticationHandler(
         IUserRepository userRepository,
         IEncryptionService encryptionService,
-        ITokenService tokenService) : IAuthenticationHandler
+        ITokenService tokenService,
+        IUnitOfWork unitOfWork) : IAuthenticationHandler
     {
         public async Task<UserResponse> Handle(AuthenticationRequest request, CancellationToken cancellationToken)
         {
@@ -24,6 +26,7 @@ namespace Microwave.Application.UseCases.User.Authentication
             await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
             await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.CommitAsync(cancellationToken);
 
             throw new NotImplementedException();
         }
