@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microwave.Application.Services;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Enums;
@@ -6,7 +7,7 @@ using Microwave.Domain.Exceptions;
 
 namespace Microwave.Infrastructure.Services.Countdown
 {
-    public class CountdownBackgroundService : BackgroundService, ICountdownBackgroundService
+    public class CountdownBackgroundService(ILogger<CountdownBackgroundService> logger) : BackgroundService, ICountdownBackgroundService
     {
         private MicrowaveServiceEntity? _microwaveService;
 
@@ -15,6 +16,7 @@ namespace Microwave.Infrastructure.Services.Countdown
             try
             {
                 _microwaveService = microwaveService;
+                logger.LogInformation("Start service.........");
                 await base.StartAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -31,6 +33,7 @@ namespace Microwave.Infrastructure.Services.Countdown
                     throw new NotFoundException("Service não encontrado");
 
                 _microwaveService.Stop();
+                logger.LogInformation("Stop service........");
                 await base.StopAsync(cancellationToken);
                 return _microwaveService;
             }
@@ -49,7 +52,10 @@ namespace Microwave.Infrastructure.Services.Countdown
                     await base.StopAsync(stoppingToken);
 
                 if (_microwaveService?.Status == MicrowaveServiceStatus.InProgress)
+                {
                     _microwaveService?.Process();
+                    logger.LogInformation("Processando ..............");
+                }
 
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }

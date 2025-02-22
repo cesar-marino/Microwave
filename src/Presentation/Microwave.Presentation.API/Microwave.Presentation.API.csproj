@@ -14,4 +14,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Microwave.Application\Microwave.Application.csproj" />
+    <ProjectReference Include="..\..\Domain\Microwave.Domain\Microwave.Domain.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Microwave.Infrastructure.Data\Microwave.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Microwave.Infrastructure.Services\Microwave.Infrastructure.Services.csproj" />
+  </ItemGroup>
+
 </Project>

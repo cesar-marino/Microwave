@@ -1,3 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Microwave.Application.Services;
+using Microwave.Application.UseCases.MicrowaveService.StartService;
+using Microwave.Domain.Repositories;
+using Microwave.Domain.SeedWork;
+using Microwave.Infrastructure.Data.Contexts;
+using Microwave.Infrastructure.Data.Repositories;
+using Microwave.Infrastructure.Services.Countdown;
+using Microwave.Infrastructure.Services.Encryption;
+using Microwave.Infrastructure.Services.Hubs;
+using Microwave.Infrastructure.Services.Token;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +22,20 @@ builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
+builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof(StartServiceHandler).Assembly));
+
+builder.Services.AddDbContext<MicrowaveContext>(options => options.UseInMemoryDatabase("memory"));
+
+builder.Services.AddSingleton<ICountdownBackgroundService, CountdownBackgroundService>();
+
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+builder.Services.AddScoped<IUnitOfWork, MicrowaveContext>();
+builder.Services.AddScoped<IHeatingProgramRepository, HeatingProgramRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
@@ -27,5 +53,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<HeatingNotificationHab>("heating-hub");
 
 app.Run();
