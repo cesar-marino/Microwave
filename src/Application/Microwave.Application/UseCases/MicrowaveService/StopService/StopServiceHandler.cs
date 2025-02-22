@@ -7,8 +7,8 @@ namespace Microwave.Application.UseCases.MicrowaveService.StopService
     {
         public async Task<MicrowaveServiceResponse> Handle(StopServiceRequest request, CancellationToken cancellationToken)
         {
-            await countdownService.StopAsync(request.MicrowaveServiceId, cancellationToken);
-            throw new NotImplementedException();
+            var microwaveService = await countdownService.StopAsync(request.MicrowaveServiceId, cancellationToken);
+            return MicrowaveServiceResponse.FromEntity(microwaveService);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Microwave.Domain.Entities;
+using Microwave.Domain.Enums;
 
 namespace Microwave.Test.UnitTest.Commons
 {
@@ -23,5 +24,7 @@ namespace Microwave.Test.UnitTest.Commons
             username: Faker.Internet.UserName(),
             password: Faker.Internet.Password(),
             token: Faker.Random.Guid().ToString());
+
+        public MicrowaveServiceEntity MakeMicrowaveServiceEntity(HeatingProgramEntity heatingProgram) => new(heatingProgram);
     }
 }

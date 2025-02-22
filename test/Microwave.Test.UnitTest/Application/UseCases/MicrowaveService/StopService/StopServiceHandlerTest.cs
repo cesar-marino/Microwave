@@ -1,5 +1,7 @@
 ﻿using Microwave.Application.Services;
 using Microwave.Application.UseCases.MicrowaveService.StopService;
+using Microwave.Domain.Entities;
+using Microwave.Domain.Enums;
 using Microwave.Domain.Exceptions;
 using Moq;
 
@@ -35,6 +37,26 @@ namespace Microwave.Test.UnitTest.Application.UseCases.MicrowaveService.StopServ
             var exception = await Assert.ThrowsAsync<NotFoundException>(act);
             Assert.Equal("not-found", exception.Code);
             Assert.Equal("Serviço não encontrado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfServiceIsSuccessfullyStoped))]
+        [Trait("Unit/UseCase", "MicrowaveService - StopService")]
+        public async Task ShouldReturnTheCorrectResponseIfServiceIsSuccessfullyStoped()
+        {
+            var microwaveService = _fixture.MakeMicrowaveServiceEntity(new HeatingProgramEntity());
+            microwaveService.Stop();
+
+            _countdownServiceMock
+                .Setup(x => x.StopAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(microwaveService);
+
+            var request = _fixture.MakeStopServiceRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.NotNull(response);
+            Assert.Equal(MicrowaveServiceStatus.Paused, response.Status);
         }
     }
 }
