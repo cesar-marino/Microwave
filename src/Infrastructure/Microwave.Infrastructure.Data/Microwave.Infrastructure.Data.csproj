@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\Microwave.Application\Microwave.Application.csproj" />
+    <ProjectReference Include="..\..\Domain\Microwave.Domain\Microwave.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
