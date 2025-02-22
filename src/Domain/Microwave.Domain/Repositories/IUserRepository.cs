@@ -6,5 +6,6 @@ namespace Microwave.Domain.Repositories
     public interface IUserRepository : IRepository<UserEntity>
     {
         Task<bool> CheckUsernameAsync(string username, CancellationToken cancellationToken = default);
+        Task<UserEntity> FindByUsernameAsync(string username, CancellationToken cancellationToken = default);
     }
 }
