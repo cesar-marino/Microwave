@@ -1,5 +1,6 @@
 ﻿using Microwave.Application.Services;
 using Microwave.Application.UseCases.User.Commons;
+using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
 
@@ -7,7 +8,8 @@ namespace Microwave.Application.UseCases.User.CreateUser
 {
     public class CreateUserHandler(
         IUserRepository userRepository,
-        IEncryptionService encryptionService) : ICreateUserHandler
+        IEncryptionService encryptionService,
+        ITokenService tokenService) : ICreateUserHandler
     {
         public async Task<UserResponse> Handle(CreateUserRequest request, CancellationToken cancellationToken)
         {
@@ -15,7 +17,13 @@ namespace Microwave.Application.UseCases.User.CreateUser
             if (usernameInUse)
                 throw new UsernameInUseException("Username já cadastrado para outro usuário");
 
-            _ = await encryptionService.EncyptAsync(request.Password, cancellationToken);
+            var passwordEncrypted = await encryptionService.EncyptAsync(request.Password, cancellationToken);
+
+            var user = new UserEntity(
+                username: request.Username,
+                password: passwordEncrypted);
+
+            _ = await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
             throw new NotImplementedException();
         }
