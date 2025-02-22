@@ -23,12 +23,12 @@ namespace Microwave.Application.UseCases.User.Authentication
             if (!passwordIsvalid)
                 throw new InvalidPasswordException("Senha incorreta");
 
-            await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
+            var token = await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
+            user.ChangeToken(token);
 
             await userRepository.UpdateAsync(user, cancellationToken);
             await unitOfWork.CommitAsync(cancellationToken);
-
-            throw new NotImplementedException();
+            return UserResponse.FromEntity(user);
         }
     }
 }

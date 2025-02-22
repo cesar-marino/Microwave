@@ -196,5 +196,39 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAuthenticated))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldReturnTheCorrectResponseIfUserIsSuccessfullyAuthenticated()
+        {
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            _encryptionServiceMock
+                .Setup(x => x.CompareAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var token = _fixture.Faker.Random.Guid().ToString();
+            _tokenServiceMock
+                .Setup(x => x.GenerateTokenAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(token);
+
+            var request = _fixture.MakeAuthenticationRequest(username: user.Username);
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.Equal(user.Id, response.UserId);
+            Assert.Equal(token, response.Token);
+            Assert.Equal(request.Username, response.Username);
+        }
     }
 }
