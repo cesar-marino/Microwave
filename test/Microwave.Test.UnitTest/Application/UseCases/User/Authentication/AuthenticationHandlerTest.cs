@@ -12,16 +12,19 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
         private readonly AuthenticationHandler _sut;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IEncryptionService> _encryptionServiceMock;
+        private readonly Mock<ITokenService> _tokenServiceMock;
 
         public AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture)
         {
             _fixture = fixture;
             _userRepositoryMock = new();
             _encryptionServiceMock = new();
+            _tokenServiceMock = new();
 
             _sut = new(
                 userRepository: _userRepositoryMock.Object,
-                encryptionService: _encryptionServiceMock.Object);
+                encryptionService: _encryptionServiceMock.Object,
+                tokenService: _tokenServiceMock.Object);
         }
 
         [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatFindByUsernameAsyncThrows))]
@@ -92,6 +95,39 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User.Authentication
             var exception = await Assert.ThrowsAsync<InvalidPasswordException>(act);
             Assert.Equal("invalid-password", exception.Code);
             Assert.Equal("Senha incorreta", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatGenerateTokenAsyncThrows))]
+        [Trait("Unit/UseCase", "User - Authentication")]
+        public async Task ShouldRethrowSameExceptionThatGenerateTokenAsyncThrows()
+        {
+            var user = _fixture.MakeUserEntity();
+            _userRepositoryMock
+                .Setup(x => x.FindByUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(user);
+
+            _encryptionServiceMock
+                .Setup(x => x.CompareAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateTokenAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeAuthenticationRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
         }
     }
 }

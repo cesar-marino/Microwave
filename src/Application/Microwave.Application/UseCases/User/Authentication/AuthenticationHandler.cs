@@ -7,7 +7,8 @@ namespace Microwave.Application.UseCases.User.Authentication
 {
     public class AuthenticationHandler(
         IUserRepository userRepository,
-        IEncryptionService encryptionService) : IAuthenticationHandler
+        IEncryptionService encryptionService,
+        ITokenService tokenService) : IAuthenticationHandler
     {
         public async Task<UserResponse> Handle(AuthenticationRequest request, CancellationToken cancellationToken)
         {
@@ -19,6 +20,8 @@ namespace Microwave.Application.UseCases.User.Authentication
 
             if (!passwordIsvalid)
                 throw new InvalidPasswordException("Senha incorreta");
+
+            await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
             throw new NotImplementedException();
         }
