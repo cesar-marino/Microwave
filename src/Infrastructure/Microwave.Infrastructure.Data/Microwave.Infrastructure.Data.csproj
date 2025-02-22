@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Application\Microwave.Application\Microwave.Application.csproj" />
     <ProjectReference Include="..\..\Domain\Microwave.Domain\Microwave.Domain.csproj" />
   </ItemGroup>
