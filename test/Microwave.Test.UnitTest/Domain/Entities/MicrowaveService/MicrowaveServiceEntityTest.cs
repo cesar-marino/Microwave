@@ -1,4 +1,6 @@
 ﻿using Microwave.Domain.Entities;
+using Microwave.Domain.Exceptions;
+using System.Threading.Tasks;
 
 namespace Microwave.Test.UnitTest.Domain.Entities.MicrowaveService
 {
@@ -31,6 +33,22 @@ namespace Microwave.Test.UnitTest.Domain.Entities.MicrowaveService
 
             Assert.Equal("Aquecimento concluído", response);
             Assert.Equal(0, microwaveService.HeatingProgram.Seconds);
+        }
+
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionIfProgramIsNotInProgress))]
+        [Trait("Unit/Entities", "MicrowaveProgram - Stop")]
+        public void ShouldThrowActionNotPermittedExceptionIfProgramIsNotInProgress()
+        {
+            var heatingProgram = new HeatingProgramEntity(seconds: 1);
+            var microwaveService = new MicrowaveServiceEntity(heatingProgram);
+
+            microwaveService.Stop();
+            microwaveService.Stop();
+            var act = () => microwaveService.Stop();
+
+            var exception = Assert.Throws<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("O programa não esta em andamento", exception.Message);
         }
     }
 }

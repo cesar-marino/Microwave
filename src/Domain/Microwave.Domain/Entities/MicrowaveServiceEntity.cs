@@ -1,11 +1,12 @@
 ﻿using Microwave.Domain.Enums;
+using Microwave.Domain.Exceptions;
 using Microwave.Domain.SeedWork;
 
 namespace Microwave.Domain.Entities
 {
     public class MicrowaveServiceEntity : EntityBase
     {
-        public MicrowaveServiceStatus Status { get; }
+        public MicrowaveServiceStatus Status { get; private set; }
         public HeatingProgramEntity HeatingProgram { get; }
 
         public MicrowaveServiceEntity(HeatingProgramEntity heatingProgram)
@@ -26,6 +27,17 @@ namespace Microwave.Domain.Entities
 
             HeatingProgram.DecreaseTime();
             return processResult;
+        }
+
+        public void Stop()
+        {
+            if (Status == MicrowaveServiceStatus.Canceled
+                || Status == MicrowaveServiceStatus.Completed)
+                throw new ActionNotPermittedException("O programa não esta em andamento");
+
+            Status = Status != MicrowaveServiceStatus.Paused
+                ? MicrowaveServiceStatus.Paused
+                : MicrowaveServiceStatus.Canceled;
         }
     }
 }
