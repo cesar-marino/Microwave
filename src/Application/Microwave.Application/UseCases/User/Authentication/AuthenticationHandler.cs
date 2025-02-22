@@ -23,6 +23,8 @@ namespace Microwave.Application.UseCases.User.Authentication
 
             await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
+            await userRepository.UpdateAsync(user, cancellationToken);
+
             throw new NotImplementedException();
         }
     }
