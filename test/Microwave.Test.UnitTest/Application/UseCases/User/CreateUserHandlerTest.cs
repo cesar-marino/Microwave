@@ -1,5 +1,6 @@
 ﻿using Microwave.Application.Services;
 using Microwave.Application.UseCases.User.CreateUser;
+using Microwave.Domain.Entities;
 using Microwave.Domain.Exceptions;
 using Microwave.Domain.Repositories;
 using Moq;
@@ -107,6 +108,43 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
                 .Setup(x => x.GenerateTokenAsync(
                     It.IsAny<Guid>(),
                     It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new UnexpectedException());
+
+            var request = _fixture.MakeCreateUserRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UnexpectedException>(act);
+            Assert.Equal("unexpected", exception.Code);
+            Assert.Equal("Erro inesperado", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldRethrowSameExceptionThatInserAsyncThrows))]
+        [Trait("Unit/UseCase", "User - CreateUser")]
+        public async Task ShouldRethrowSameExceptionThatInserAsyncThrows()
+        {
+            _userRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            _encryptionServiceMock
+                .Setup(x => x.EncyptAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync("");
+
+            _tokenServiceMock
+                .Setup(x => x.GenerateTokenAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync("");
+
+            _userRepositoryMock
+                .Setup(x => x.InsertAsync(
+                    It.IsAny<UserEntity>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new UnexpectedException());
 

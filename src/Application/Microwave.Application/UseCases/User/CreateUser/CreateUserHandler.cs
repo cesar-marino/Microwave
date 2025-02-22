@@ -25,6 +25,7 @@ namespace Microwave.Application.UseCases.User.CreateUser
 
             _ = await tokenService.GenerateTokenAsync(user.Id, user.Username, cancellationToken);
 
+            await userRepository.InsertAsync(user, cancellationToken);
             throw new NotImplementedException();
         }
     }
