@@ -35,5 +35,23 @@ namespace Microwave.Test.UnitTest.Application.UseCases.User
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldThrowUsernameInUseExceptionIfCheckUsernameAsyncReturnsTrue))]
+        [Trait("Unit/UseCase", "User - CreateUser")]
+        public async Task ShouldThrowUsernameInUseExceptionIfCheckUsernameAsyncReturnsTrue()
+        {
+            _userRepositoryMock
+                .Setup(x => x.CheckUsernameAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
+
+            var request = _fixture.MakeCreateUserRequest();
+            var act = () => _sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<UsernameInUseException>(act);
+            Assert.Equal("username-in-use", exception.Code);
+            Assert.Equal("Username já cadastrado para outro usuário", exception.Message);
+        }
     }
 }
