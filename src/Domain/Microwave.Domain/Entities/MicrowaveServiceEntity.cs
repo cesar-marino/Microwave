@@ -22,7 +22,10 @@ namespace Microwave.Domain.Entities
             var processResult = string.Empty;
 
             if (HeatingProgram.Seconds <= 0)
+            {
+                Status = MicrowaveServiceStatus.Completed;
                 return "Aquecimento concluído";
+            }
 
             if (Status == MicrowaveServiceStatus.Paused)
                 Status = MicrowaveServiceStatus.InProgress;
