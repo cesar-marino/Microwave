@@ -29,6 +29,30 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Upd
             Assert.Equal("Programa não encontrado", exception.Message);
         }
 
+        [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedExceptionPredefined))]
+        [Trait("Integration/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldThrowActionNotPermittedExceptionPredefined()
+        {
+            var context = _fixture.MakeMicrowaveContext();
+            var heatingProgram = _fixture.MakeHeatingProgramEntity(predefined: true);
+            await context.HeatingPrograms.AddAsync(heatingProgram);
+            await context.SaveChangesAsync();
+
+            var unitOfWork = new UnitOfWork(context);
+            var repository = new HeatingProgramRepository(context);
+
+            var sut = new UpdateHeatingProgramHandler(
+                heatingProgramRepository: repository,
+                unitOfWork: unitOfWork);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest(heatingProgramId: heatingProgram.Id);
+            var act = () => sut.Handle(request, _fixture.CancellationToken);
+
+            var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
+            Assert.Equal("action-not-permitted", exception.Code);
+            Assert.Equal("Não é permitido alterar um programa predefinido", exception.Message);
+        }
+
         [Fact(DisplayName = nameof(ShouldThrowActionNotPermittedException))]
         [Trait("Integration/UseCase", "HeatingProgram - UpdateHeatingProgram")]
         public async Task ShouldThrowActionNotPermittedException()
