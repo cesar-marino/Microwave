@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram;
 using Microwave.Domain.Exceptions;
+using Microwave.Infrastructure.Data.Contexts;
 using Microwave.Infrastructure.Data.Repositories;
 
 namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.CreateHeatingProgram
@@ -20,9 +21,10 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Cre
             trackingInfo.State = EntityState.Detached;
 
             var repository = new HeatingProgramRepository(context);
+            var unitOfWork = new UnitOfWork(context);
             var sut = new CreateHeatingProgramHandler(
                 heatingProgramRepository: repository,
-                unitOfWork: context);
+                unitOfWork: unitOfWork);
 
             var request = _fixture.MakeCreateHeatingProgramRequest(character: heatingProgram.Character);
             var act = () => sut.Handle(request, _fixture.CancellationToken);
@@ -38,9 +40,10 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Cre
         {
             var context = _fixture.MakeMicrowaveContext();
             var repository = new HeatingProgramRepository(context);
+            var unitOfWork = new UnitOfWork(context);
             var sut = new CreateHeatingProgramHandler(
                 heatingProgramRepository: repository,
-                unitOfWork: context);
+                unitOfWork: unitOfWork);
 
             var request = _fixture.MakeCreateHeatingProgramRequest();
             var response = await sut.Handle(request, _fixture.CancellationToken);

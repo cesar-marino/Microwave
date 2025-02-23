@@ -19,16 +19,22 @@ namespace Microwave.Presentation.API.Filters
 
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
-            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var username = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(username))
             {
                 context.Result = new UnauthorizedResult();
                 return;
             }
 
             var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
-            _ = await userRepository.FindAsync(new Guid(userId));
+            var existUser = await userRepository.CheckUsernameAsync(username);
+
+            if (!existUser)
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
         }
     }
 }

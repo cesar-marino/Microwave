@@ -12,23 +12,23 @@ namespace Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram
         string food,
         string? instructions) : IRequest<HeatingProgramResponse>
     {
-        [Required]
-        [MinLength(1)]
-        [MaxLength(120)]
+        //[Required]
+        //[MinLength(1)]
+        //[MaxLength(120)]
         public int Seconds { get; } = seconds;
 
-        [Required]
-        [MinLength(1)]
-        [MaxLength(10)]
+        //[Required]
+        //[MinLength(1)]
+        //[MaxLength(10)]
         public int Power { get; } = power;
 
-        [Required]
+        //[Required]
         public char Character { get; } = character;
 
-        [Required]
+        //[Required]
         public string Name { get; } = name;
 
-        [Required]
+        //[Required]
         public string Food { get; } = food;
 
         public string? Instructions { get; } = instructions;

@@ -11,7 +11,7 @@ namespace Microwave.Presentation.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [CustomAuthorize()]
+    //[CustomAuthorize()]
     public class HeatingProgramController(IMediator mediator) : ControllerBase
     {
         [HttpPost]

@@ -65,7 +65,7 @@ builder.Services.AddSingleton<ICountdownBackgroundService, CountdownBackgroundSe
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-builder.Services.AddScoped<IUnitOfWork, MicrowaveContext>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IHeatingProgramRepository, HeatingProgramRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
