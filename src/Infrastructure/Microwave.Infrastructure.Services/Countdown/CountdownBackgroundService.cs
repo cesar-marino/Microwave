@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microwave.Application.Services;
 using Microwave.Domain.Entities;
@@ -15,9 +14,14 @@ namespace Microwave.Infrastructure.Services.Countdown
     {
         private MicrowaveServiceEntity? _microwaveService;
 
-        public Task<MicrowaveServiceEntity> ResumeAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
+        public async Task<MicrowaveServiceEntity> ResumeAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (microwaveServiceId != _microwaveService?.Id)
+                throw new NotFoundException("Service não encontrado");
+
+            _microwaveService.Resume();
+            await base.StartAsync(cancellationToken);
+            return _microwaveService;
         }
 
         public async Task StartAsync(MicrowaveServiceEntity microwaveService, CancellationToken cancellationToken = default)
@@ -25,7 +29,6 @@ namespace Microwave.Infrastructure.Services.Countdown
             try
             {
                 _microwaveService = microwaveService;
-                logger.LogInformation("Start service.........");
                 await base.StartAsync(cancellationToken);
             }
             catch (Exception ex)
@@ -34,7 +37,7 @@ namespace Microwave.Infrastructure.Services.Countdown
             }
         }
 
-        public async Task<MicrowaveServiceEntity> StopAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
+        public Task<MicrowaveServiceEntity> StopAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -42,9 +45,7 @@ namespace Microwave.Infrastructure.Services.Countdown
                     throw new NotFoundException("Service não encontrado");
 
                 _microwaveService.Stop();
-                logger.LogInformation("Stop service........");
-                await base.StopAsync(cancellationToken);
-                return _microwaveService;
+                return Task.FromResult(_microwaveService);
             }
             catch (Exception ex)
             {
@@ -63,15 +64,7 @@ namespace Microwave.Infrastructure.Services.Countdown
                 if (_microwaveService?.Status == MicrowaveServiceStatus.InProgress)
                 {
                     var processResult = _microwaveService?.Process();
-
-                    //await notification.Clients.All.SendAsync(
-                    //    "HeatingProgress",
-                    //    processResult,
-                    //    _microwaveService?.HeatingProgram.Seconds,
-                    //    cancellationToken: stoppingToken);
-
                     await notificationService.NotificationAsync(processResult ?? "Sem mensagem", stoppingToken);
-
                     logger.LogInformation($"{processResult} - tempo: {_microwaveService?.HeatingProgram.Seconds}");
                 }
 

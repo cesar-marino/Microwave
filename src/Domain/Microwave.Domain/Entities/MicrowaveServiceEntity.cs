@@ -37,6 +37,8 @@ namespace Microwave.Domain.Entities
             return processResult;
         }
 
+        public void Resume() => Status = MicrowaveServiceStatus.InProgress;
+
         public void Stop()
         {
             CheckProgramIsRunning();

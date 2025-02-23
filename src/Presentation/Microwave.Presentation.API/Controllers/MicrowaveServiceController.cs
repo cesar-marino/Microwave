@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microwave.Application.UseCases.MicrowaveService.ResumeServivce;
 using Microwave.Application.UseCases.MicrowaveService.StartService;
 using Microwave.Application.UseCases.MicrowaveService.StopService;
 
@@ -21,6 +22,15 @@ namespace Microwave.Presentation.API.Controllers
         [HttpPost("stop")]
         public async Task<IActionResult> Stop(
             [FromBody] StopServiceRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            var response = await mediator.Send(request, cancellationToken);
+            return Ok(response);
+        }
+
+        [HttpPost("resume")]
+        public async Task<IActionResult> Resume(
+            [FromBody] ResumeServiceRequest request,
             CancellationToken cancellationToken = default)
         {
             var response = await mediator.Send(request, cancellationToken);
