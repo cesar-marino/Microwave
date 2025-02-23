@@ -1,4 +1,5 @@
-﻿using Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram;
+﻿using Microsoft.EntityFrameworkCore;
+using Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram;
 using Microwave.Domain.Exceptions;
 using Microwave.Infrastructure.Data.Contexts;
 using Microwave.Infrastructure.Data.Repositories;
@@ -78,6 +79,44 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Upd
             var exception = await Assert.ThrowsAsync<ActionNotPermittedException>(act);
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Caractere de aquecimento em uso", exception.Message);
+        }
+
+        [Fact(DisplayName = nameof(ShouldUpdateHeatingProgram))]
+        [Trait("Integration/UseCase", "HeatingProgram - UpdateHeatingProgram")]
+        public async Task ShouldUpdateHeatingProgram()
+        {
+            var context = _fixture.MakeMicrowaveContext();
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            await context.HeatingPrograms.AddAsync(heatingProgram);
+            await context.SaveChangesAsync();
+
+            var unitOfWork = new UnitOfWork(context);
+            var repository = new HeatingProgramRepository(context);
+
+            var sut = new UpdateHeatingProgramHandler(
+                heatingProgramRepository: repository,
+                unitOfWork: unitOfWork);
+
+            var request = _fixture.MakeUpdateHeatingProgramRequest(heatingProgramId: heatingProgram.Id);
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.False(response.Predefined);
+            Assert.Equal(request.Character, response.Character);
+            Assert.Equal(request.Food, response.Food);
+            Assert.Equal(request.HeatingProgramId, response.HeatingProgramId);
+            Assert.Equal(request.Instructions, response.Instructions);
+            Assert.Equal(request.Name, response.Name);
+            Assert.Equal(request.Power, response.Power);
+            Assert.Equal(request.Seconds, response.Seconds);
+
+            var programDb = await context.HeatingPrograms.FirstOrDefaultAsync(x => x.Id == heatingProgram.Id);
+            Assert.Equal(request.Character, programDb?.Character);
+            Assert.Equal(request.Food, programDb?.Food);
+            Assert.Equal(request.HeatingProgramId, programDb?.Id);
+            Assert.Equal(request.Instructions, programDb?.Instructions);
+            Assert.Equal(request.Name, programDb?.Name);
+            Assert.Equal(request.Power, programDb?.Power);
+            Assert.Equal(request.Seconds, programDb?.Seconds);
         }
     }
 }
