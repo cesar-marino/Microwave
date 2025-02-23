@@ -9,7 +9,6 @@ namespace Microwave.Presentation.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [AllowAnonymous]
     public class UserController(IMediator mediator) : ControllerBase
     {
         [HttpPost("create")]
