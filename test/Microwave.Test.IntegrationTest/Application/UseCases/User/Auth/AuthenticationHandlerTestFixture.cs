@@ -5,8 +5,8 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.User.Auth
 {
     public class AuthenticationHandlerTestFixture : FixtureBase
     {
-        public AuthenticationRequest MakeAuthenticationRequest() => new(
-            username: Faker.Internet.UserName(),
+        public AuthenticationRequest MakeAuthenticationRequest(string? username = null) => new(
+            username: username ?? Faker.Internet.UserName(),
             password: Faker.Internet.Password());
     }
 }

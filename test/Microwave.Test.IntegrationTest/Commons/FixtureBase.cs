@@ -41,10 +41,10 @@ namespace Microwave.Test.IntegrationTest.Commons
             food: Faker.Random.String(),
             instructions: Faker.Random.String());
 
-        public UserEntity MakeUserEntity() => new(
+        public UserEntity MakeUserEntity(string? password = null) => new(
             userId: Faker.Random.Guid(),
             username: Faker.Internet.UserName(),
-            password: Faker.Internet.Password(),
+            password: password ?? Faker.Internet.Password(),
             token: Faker.Random.Guid().ToString());
 
         public MicrowaveServiceEntity MakeMicrowaveServiceEntity(HeatingProgramEntity heatingProgram) => new(heatingProgram);
