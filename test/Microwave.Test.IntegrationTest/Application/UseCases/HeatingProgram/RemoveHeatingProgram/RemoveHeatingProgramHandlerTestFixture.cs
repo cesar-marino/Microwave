@@ -5,7 +5,7 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Rem
 {
     public class RemoveHeatingProgramHandlerTestFixture : FixtureBase
     {
-        public RemoveHeatingProgramRequest MakeRemoveHeatingPRogramRequest(Guid? heatingProgramId = null) =>
+        public RemoveHeatingProgramRequest MakeRemoveHeatingProgramRequest(Guid? heatingProgramId = null) =>
             new(heatingProgramId: heatingProgramId ?? Faker.Random.Guid());
     }
 }
