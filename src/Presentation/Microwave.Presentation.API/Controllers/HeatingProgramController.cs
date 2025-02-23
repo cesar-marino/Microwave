@@ -7,7 +7,7 @@ using Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram;
 
 namespace Microwave.Presentation.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class HeatingProgramController(IMediator mediator) : ControllerBase
     {
