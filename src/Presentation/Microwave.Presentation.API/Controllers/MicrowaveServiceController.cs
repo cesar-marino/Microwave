@@ -10,7 +10,7 @@ namespace Microwave.Presentation.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    //[CustomAuthorize()]
+    [CustomAuthorize()]
     public class MicrowaveServiceController(IMediator mediator) : ControllerBase
     {
         [HttpPost("start")]
