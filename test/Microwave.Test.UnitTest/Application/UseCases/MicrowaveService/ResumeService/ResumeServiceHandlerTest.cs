@@ -37,5 +37,30 @@ namespace Microwave.Test.UnitTest.Application.UseCases.MicrowaveService.ResumeSe
             Assert.Equal("unexpected", exception.Code);
             Assert.Equal("Erro inesperado", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnTheCorrectResponseIfServiceIsSuccessfullyResumed))]
+        [Trait("Unit/UseCase", "MicrowaveService - ResumeService")]
+        public async Task ShouldReturnTheCorrectResponseIfServiceIsSuccessfullyResumed()
+        {
+            var heatingProgram = _fixture.MakeHeatingProgramEntity();
+            var microwaveService = _fixture.MakeMicrowaveServiceEntity(heatingProgram);
+            _countdownBackgroundServiceMock
+                .Setup(x => x.ResumeAsync(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(microwaveService);
+
+            var request = _fixture.MakeResumeServiceRequest();
+            var response = await _sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.Equal(heatingProgram.Character, response.HeatingProgram.Character);
+            Assert.Equal(heatingProgram.Food, response.HeatingProgram.Food);
+            Assert.Equal(heatingProgram.Id, response.HeatingProgram.HeatingProgramId);
+            Assert.Equal(heatingProgram.Instructions, response.HeatingProgram.Instructions);
+            Assert.Equal(heatingProgram.Name, response.HeatingProgram.Name);
+            Assert.Equal(heatingProgram.Power, response.HeatingProgram.Power);
+            Assert.Equal(heatingProgram.Predefined, response.HeatingProgram.Predefined);
+            Assert.Equal(heatingProgram.Seconds, response.HeatingProgram.Seconds);
+        }
     }
 }
