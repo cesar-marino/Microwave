@@ -15,6 +15,11 @@ namespace Microwave.Infrastructure.Services.Countdown
     {
         private MicrowaveServiceEntity? _microwaveService;
 
+        public Task<MicrowaveServiceEntity> ResumeAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task StartAsync(MicrowaveServiceEntity microwaveService, CancellationToken cancellationToken = default)
         {
             try
