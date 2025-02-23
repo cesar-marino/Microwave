@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microwave.Application.UseCases.User.Authentication;
 using Microwave.Domain.Exceptions;
 using Microwave.Infrastructure.Data.Contexts;
