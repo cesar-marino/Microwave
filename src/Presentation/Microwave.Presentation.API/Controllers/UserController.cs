@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microwave.Application.UseCases.User.Authentication;
 using Microwave.Application.UseCases.User.Commons;
@@ -8,6 +9,7 @@ namespace Microwave.Presentation.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class UserController(IMediator mediator) : ControllerBase
     {
         [HttpPost("create")]

@@ -5,11 +5,13 @@ using Microwave.Application.UseCases.HeatingProgram.CreateHeatingProgram;
 using Microwave.Application.UseCases.HeatingProgram.GetListHeatingPrograms;
 using Microwave.Application.UseCases.HeatingProgram.RemoveHeatingProgram;
 using Microwave.Application.UseCases.HeatingProgram.UpdateHeatingProgram;
+using Microwave.Presentation.API.Filters;
 
 namespace Microwave.Presentation.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [CustomAuthorize()]
     public class HeatingProgramController(IMediator mediator) : ControllerBase
     {
         [HttpPost]
