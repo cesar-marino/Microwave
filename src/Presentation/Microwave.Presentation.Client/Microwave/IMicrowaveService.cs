@@ -1,7 +1,10 @@
-﻿namespace Microwave.Presentation.Client.Microwave
+﻿using Microwave.Presentation.Client.Models;
+
+namespace Microwave.Presentation.Client.Microwave
 {
     public interface IMicrowaveService
     {
+        Task<List<ProgramModel>> GetListPrograms(CancellationToken cancellationToken = default);
 
         //Task<ProgramModel> CreateProgramAsync(CreateProgramRequest request);
         //Task<List<ProgramModel>> GetListPrograms();
