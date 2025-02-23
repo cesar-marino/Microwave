@@ -1,13 +1,17 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microwave.Application.Services;
 using Microwave.Domain.Entities;
 using Microwave.Domain.Enums;
 using Microwave.Domain.Exceptions;
+using Microwave.Infrastructure.Services.Hubs;
 
 namespace Microwave.Infrastructure.Services.Countdown
 {
-    public class CountdownBackgroundService(ILogger<CountdownBackgroundService> logger) : BackgroundService, ICountdownBackgroundService
+    public class CountdownBackgroundService(
+        ILogger<CountdownBackgroundService> logger,
+        NotificationService notificationService) : BackgroundService, ICountdownBackgroundService
     {
         private MicrowaveServiceEntity? _microwaveService;
 
@@ -53,8 +57,17 @@ namespace Microwave.Infrastructure.Services.Countdown
 
                 if (_microwaveService?.Status == MicrowaveServiceStatus.InProgress)
                 {
-                    _microwaveService?.Process();
-                    logger.LogInformation("Processando ..............");
+                    var processResult = _microwaveService?.Process();
+
+                    //await notification.Clients.All.SendAsync(
+                    //    "HeatingProgress",
+                    //    processResult,
+                    //    _microwaveService?.HeatingProgram.Seconds,
+                    //    cancellationToken: stoppingToken);
+
+                    await notificationService.NotificationAsync(processResult ?? "Sem mensagem", stoppingToken);
+
+                    logger.LogInformation($"{processResult} - tempo: {_microwaveService?.HeatingProgram.Seconds}");
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);

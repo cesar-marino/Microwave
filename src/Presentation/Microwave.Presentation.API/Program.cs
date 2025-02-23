@@ -28,6 +28,7 @@ builder.Services.AddMediatR(config => config.RegisterServicesFromAssembly(typeof
 
 builder.Services.AddDbContext<MicrowaveContext>(options => options.UseInMemoryDatabase("memory"));
 
+builder.Services.AddSingleton<NotificationService>();
 builder.Services.AddSingleton<ICountdownBackgroundService, CountdownBackgroundService>();
 
 builder.Services.AddScoped<IEncryptionService, EncryptionService>();
@@ -53,6 +54,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<HeatingNotificationHab>("heating-hub");
+app.MapHub<HeatingNotificationHab>("/heatingHub");
 
 app.Run();
