@@ -6,7 +6,7 @@ using Microwave.Infrastructure.Data.Repositories;
 using Microwave.Infrastructure.Services.Encryption;
 using Microwave.Infrastructure.Services.Token;
 
-namespace Microwave.Test.IntegrationTest.Application.UseCases.User.Auth
+namespace Microwave.Test.IntegrationTest.Application.UseCases.User.Authentication
 {
     public class AuthenticationHandlerTest(AuthenticationHandlerTestFixture fixture) : IClassFixture<AuthenticationHandlerTestFixture>
     {
