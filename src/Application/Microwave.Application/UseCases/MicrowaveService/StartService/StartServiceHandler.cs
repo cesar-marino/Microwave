@@ -11,14 +11,18 @@ namespace Microwave.Application.UseCases.MicrowaveService.StartService
     {
         public async Task<MicrowaveServiceResponse> Handle(StartServiceRequest request, CancellationToken cancellationToken)
         {
+            HeatingProgramEntity heatingProgram;
             if (request.HeatingProgramId != null)
             {
-                await heatingProgramRepository.FindAsync(
+                heatingProgram = await heatingProgramRepository.FindAsync(
                     (Guid)request.HeatingProgramId,
                     cancellationToken);
             }
+            else
+            {
+                heatingProgram = new HeatingProgramEntity(seconds: request.Seconds ?? 30, power: request.Power ?? 10);
+            }
 
-            var heatingProgram = new HeatingProgramEntity();
             var microwaveService = new MicrowaveServiceEntity(heatingProgram);
             await countdownService.StartAsync(microwaveService, cancellationToken);
             return MicrowaveServiceResponse.FromEntity(microwaveService);
