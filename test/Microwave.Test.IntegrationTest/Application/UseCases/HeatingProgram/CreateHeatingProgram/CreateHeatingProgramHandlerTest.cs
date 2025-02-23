@@ -31,5 +31,27 @@ namespace Microwave.Test.IntegrationTest.Application.UseCases.HeatingProgram.Cre
             Assert.Equal("action-not-permitted", exception.Code);
             Assert.Equal("Caractere de aquecimento em uso", exception.Message);
         }
+
+        [Fact(DisplayName = nameof(ShouldReturnHeatingProgramCreated))]
+        [Trait("Integration/UseCase", "HeatingProgram - CreateHeatingProgram")]
+        public async Task ShouldReturnHeatingProgramCreated()
+        {
+            var context = _fixture.MakeMicrowaveContext();
+            var repository = new HeatingProgramRepository(context);
+            var sut = new CreateHeatingProgramHandler(
+                heatingProgramRepository: repository,
+                unitOfWork: context);
+
+            var request = _fixture.MakeCreateHeatingProgramRequest();
+            var response = await sut.Handle(request, _fixture.CancellationToken);
+
+            Assert.False(response.Predefined);
+            Assert.Equal(request.Character, response.Character);
+            Assert.Equal(request.Food, response.Food);
+            Assert.Equal(request.Instructions, response.Instructions);
+            Assert.Equal(request.Name, response.Name);
+            Assert.Equal(request.Power, response.Power);
+            Assert.Equal(request.Seconds, response.Seconds);
+        }
     }
 }
