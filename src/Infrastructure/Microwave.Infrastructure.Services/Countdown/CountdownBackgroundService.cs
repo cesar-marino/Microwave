@@ -16,12 +16,23 @@ namespace Microwave.Infrastructure.Services.Countdown
 
         public async Task<MicrowaveServiceEntity> ResumeAsync(Guid microwaveServiceId, CancellationToken cancellationToken = default)
         {
-            if (microwaveServiceId != _microwaveService?.Id)
-                throw new NotFoundException("Service não encontrado");
+            try
+            {
+                if (microwaveServiceId != _microwaveService?.Id)
+                    throw new NotFoundException("Serviço não encontrado");
 
-            _microwaveService.Resume();
-            await base.StartAsync(cancellationToken);
-            return _microwaveService;
+                _microwaveService.Resume();
+                await base.StartAsync(cancellationToken);
+                return _microwaveService;
+            }
+            catch (DomainException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new UnexpectedException(innerException: ex);
+            }
         }
 
         public async Task StartAsync(MicrowaveServiceEntity microwaveService, CancellationToken cancellationToken = default)
@@ -47,6 +58,10 @@ namespace Microwave.Infrastructure.Services.Countdown
                 _microwaveService.Stop();
                 return Task.FromResult(_microwaveService);
             }
+            catch (DomainException)
+            {
+                throw;
+            }
             catch (Exception ex)
             {
                 throw new UnexpectedException(innerException: ex);
@@ -59,7 +74,10 @@ namespace Microwave.Infrastructure.Services.Countdown
             {
                 if (_microwaveService?.Status == MicrowaveServiceStatus.Canceled
                     || _microwaveService?.Status == MicrowaveServiceStatus.Completed)
+                {
+                    _microwaveService = null;
                     await base.StopAsync(stoppingToken);
+                }
 
                 if (_microwaveService?.Status == MicrowaveServiceStatus.InProgress)
                 {

@@ -11,6 +11,7 @@ using Microwave.Infrastructure.Services.Encryption;
 using Microwave.Infrastructure.Services.Hubs;
 using Microwave.Infrastructure.Services.Token;
 using Microwave.Presentation.API.Filters;
+using Microwave.Presentation.API.Initializations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +71,12 @@ builder.Services.AddScoped<IHeatingProgramRepository, HeatingProgramRepository>(
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    DbInitializer.Initialize(services);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

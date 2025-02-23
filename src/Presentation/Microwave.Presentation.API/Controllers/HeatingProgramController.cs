@@ -37,7 +37,7 @@ namespace Microwave.Presentation.API.Controllers
             return Ok(response);
         }
 
-        [HttpDelete("id:Guid/remove")]
+        [HttpDelete("{id:Guid}/remove")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
