@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microwave.Application.UseCases.MicrowaveService.ResumeServivce;
 using Microwave.Application.UseCases.MicrowaveService.StartService;
 using Microwave.Application.UseCases.MicrowaveService.StopService;
+using Microwave.Presentation.API.Filters;
 
 namespace Microwave.Presentation.API.Controllers
 {
@@ -11,6 +12,7 @@ namespace Microwave.Presentation.API.Controllers
     public class MicrowaveServiceController(IMediator mediator) : ControllerBase
     {
         [HttpPost("start")]
+        [CustomAuthorize()]
         public async Task<IActionResult> Start(
             [FromBody] StartServiceRequest request,
             CancellationToken cancellationToken = default)

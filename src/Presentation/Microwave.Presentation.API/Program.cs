@@ -9,14 +9,13 @@ using Microwave.Infrastructure.Services.Countdown;
 using Microwave.Infrastructure.Services.Encryption;
 using Microwave.Infrastructure.Services.Hubs;
 using Microwave.Infrastructure.Services.Token;
+using Microwave.Presentation.API.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-//builder.Services.AddControllers(options => options.Filters.Add(typeof(ApiGlobalExceptionFilter))).AddJsonOptions();
-
+builder.Services.AddControllers(options => options.Filters.Add(typeof(ApiGlobalExceptionFilter))).AddJsonOptions(jsonOptions => { });
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
